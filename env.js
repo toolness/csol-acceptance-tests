@@ -1,4 +1,5 @@
 var url = require('url');
+var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
 
@@ -82,11 +83,30 @@ ENV.OPENBADGER.OPENBADGER_NOTIFICATION_WEBHOOK =
   'http://localhost:' + ENV.CSOL_SITE.PORT + '/notify/claim';
 
 sanityCheckEnvironment();
+createDataDirectories();
 
 module.exports = ENV;
 
 if (!module.parent)
   console.log(ENV);
+
+function createDataDirectories() {
+  [
+    ENV.OPENBADGER.OPENBADGER_LOGDIR,
+    ENV.OPENBADGER.OPENBADGER_AWS_FAKE_S3_DIR,
+    ENV.CSOL_SITE.CSOL_AWS_FAKE_S3_DIR
+  ].map(function mkPath(abspath) {
+    var parts = abspath.split(path.sep).slice(1);
+    var currPath = path.sep;
+
+    for (var i = 0; i < parts.length; i++) {
+      currPath += parts[i];
+      if (!fs.existsSync(currPath))
+        fs.mkdirSync(currPath);
+      currPath += '/';
+    }
+  });
+}
 
 function sanityCheckEnvironment() {
   assert(!isNaN(PORT) && PORT >= 0, "Port must be valid.");
