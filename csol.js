@@ -31,6 +31,25 @@ program
   });
 
 program
+  .command('start')
+  .description('start all services')
+  .action(function() {
+    async.series([
+      projects['CSOL-site'].exec.bind(null, 'npm run-script sync-db'),
+      projects['CSOL-site'].exec.bind(null, 'npm run-script migrate-db'),
+      function(cb) {
+        async.parallel([
+          projects['CSOL-site'].exec.bind(null, 'node app.js'),
+          projects['aestimia'].exec.bind(null, 'node bin/aestimia.js'),
+          projects['openbadger'].exec.bind(null, 'node app.js'),
+        ], cb);
+      }
+    ], function(err) {
+      if (err) throw err;
+    });
+  });
+
+program
   .command('shell <project-name>')
   .description('launch shell in project dir, with environment set')
   .action(function(project) {

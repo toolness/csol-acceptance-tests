@@ -12,8 +12,14 @@ git clone --recursive https://github.com/toolness/csol-acceptance-tests.git
 cd csol-acceptance-tests
 npm install
 node csol.js init
-# TODO: Need to finish this.
+node csol.js start
 ```
+
+At this point, you can browse to the following sites:
+
+* http://localhost:3000/ for CSOL-site
+* http://localhost:3001/ for Aestimia
+* http://localhost:3002/ for Openbadger
 
 ## Environment Variables
 
