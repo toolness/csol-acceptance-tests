@@ -1,7 +1,23 @@
 This is an attempt at making it easy to set up the entire Chicago Summer
 of Learning infrastructure and run acceptance tests on it.
 
+## Prerequisites
+
+You'll need node, MongoDB, Redis, and MySQL.
+
+## Quick Start
+
+```bash
+git clone --recursive https://github.com/toolness/csol-acceptance-tests.git
+cd csol-acceptance-tests
+npm install
+node csol.js init
+# TODO: Need to finish this.
+```
+
 ## Environment Variables
+
+All environment variables are optional.
 
 * `PORT`: The *starting* port used by this test infrastructure.
   If it is set to 3000 (the default), then CSOL-site will be bound to
