@@ -1,5 +1,5 @@
 This is an attempt at making it easy to set up the entire Chicago Summer
-of Learning infrastructure and easily run acceptance tests on it.
+of Learning infrastructure and run acceptance tests on it.
 
 ## Environment Variables
 
