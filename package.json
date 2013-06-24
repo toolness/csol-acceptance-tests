@@ -1,0 +1,18 @@
+{
+  "name": "csol-acceptance-tests",
+  "version": "0.0.1",
+  "description": "This is an attempt at making it easy to set up the entire Chicago Summer of Learning infrastructure and run acceptance tests on it.",
+  "dependencies": {
+    "async": "~0.2.9",
+    "commander": "~1.2.0",
+    "underscore": "~1.4.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/toolness/csol-acceptance-tests.git"
+  },
+  "license": "BSD"
+}
