@@ -10,12 +10,26 @@ program
   .description('set up initial packages, databases, etc.')
   .action(function() {
     async.series([
-      projects.csolSite.exec.bind(null, 'npm install'),
-      projects.aestimia.exec.bind(null, 'npm install'),
-      projects.openbadger.exec.bind(null, 'npm install')
+      projects['CSOL-site'].exec.bind(null, 'npm install'),
+      projects['aestimia'].exec.bind(null, 'npm install'),
+      projects['openbadger'].exec.bind(null, 'npm install')
     ], function(err) {
       if (err) throw err;
       console.log("Initialization successful.");
+    });
+  });
+
+program
+  .command('shell <project-name>')
+  .description('launch shell in project dir, with environment set')
+  .action(function(project) {
+    if (!(project in projects)) {
+      console.log("Invalid project. Please choose from " +
+                  Object.keys(projects).join(", ") + ".");
+      process.exit(1);
+    }
+    projects[project].exec(process.env.SHELL, [], function(err) {
+      if (err) throw err;
     });
   });
 
