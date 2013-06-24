@@ -1,0 +1,9 @@
+[submodule "aestimia"]
+	path = aestimia
+	url = https://github.com/mozilla/aestimia.git
+[submodule "CSOL-site"]
+	path = CSOL-site
+	url = https://github.com/mozilla/CSOL-site.git
+[submodule "openbadger"]
+	path = openbadger
+	url = https://github.com/mozilla/openbadger.git
