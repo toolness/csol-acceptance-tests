@@ -53,7 +53,9 @@ program
           password: projects['CSOL-site'].env.CSOL_DB_PASS,
           db: projects['CSOL-site'].env.CSOL_DB_NAME
         }, cb);
-      }
+      },
+      projects['CSOL-site'].exec.bind(null, 'npm run-script sync-db'),
+      projects['CSOL-site'].exec.bind(null, 'npm run-script migrate-db')
     ], function(err) {
       if (err) throw err;
       console.log("Initialization successful.");
@@ -65,8 +67,6 @@ program
   .description('start all services')
   .action(function() {
     async.series([
-      projects['CSOL-site'].exec.bind(null, 'npm run-script sync-db'),
-      projects['CSOL-site'].exec.bind(null, 'npm run-script migrate-db'),
       startServer.bind(null, projects['aestimia'], 'node bin/aestimia.js'),
       startServer.bind(null, projects['openbadger'], 'node app.js'),
       startServer.bind(null, projects['CSOL-site'], 'node app.js')
