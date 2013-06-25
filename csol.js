@@ -51,6 +51,9 @@ program
     ], function(err) {
       if (err) throw err;
       console.log("Services started.");
+      Object.keys(projects).forEach(function(name) {
+        console.log(name + " is accessible at " + projects[name].url);
+      });
     });
   });
 
