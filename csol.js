@@ -22,6 +22,9 @@ process.on('uncaughtException', function(err) {
 });
 
 program
+  .option('-v, --verbose', 'verbose logging');
+
+program
   .command('init')
   .description('set up initial packages, databases, etc.')
   .action(function() {
@@ -80,6 +83,10 @@ program
   .command('test')
   .description('run acceptance tests')
   .action(function() {
+    if (!program.verbose) {
+      projects.stderr = projects.stdout = 'ignore';
+      console.info = function() {};
+    }
     var phantom = Phantom();
     async.series([
       servers.start.bind(null, projects['aestimia']),
