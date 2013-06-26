@@ -34,8 +34,8 @@ program
           db: projects['CSOL-site'].env.CSOL_DB_NAME
         }, cb);
       },
-      projects['CSOL-site'].exec.bind(null, 'npm run-script sync-db'),
-      projects['CSOL-site'].exec.bind(null, 'npm run-script migrate-db')
+      projects['CSOL-site'].exec.bind(null, 'node bin/sync-db'),
+      projects['CSOL-site'].exec.bind(null, 'node bin/migrate-db')
     ], function(err) {
       if (err) throw err;
       console.log("Initialization successful.");
