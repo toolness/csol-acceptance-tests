@@ -6,6 +6,8 @@ var async = require('async');
 var projects = require('./lib/projects');
 var db = require('./lib/db');
 var servers = require('./lib/servers');
+var acceptanceTests = require('./lib/acceptance-tests');
+var Phantom = require('./lib/phantom');
 
 process.on('uncaughtException', function(err) {
   servers.stopAll(function() {
@@ -68,6 +70,24 @@ program
     }
     projects[project].exec(process.env.SHELL, [], function(err) {
       if (err) throw err;
+    });
+  });
+
+program
+  .command('test')
+  .description('run acceptance tests')
+  .action(function() {
+    var phantom = Phantom();
+    async.series([
+      servers.start.bind(null, projects['aestimia']),
+      servers.start.bind(null, projects['openbadger']),
+      servers.start.bind(null, projects['CSOL-site']),
+      servers.start.bind(null, phantom),
+      acceptanceTests.run.bind(null, phantom.createWebdriver()),
+      servers.stopAll
+    ], function(err) {
+      if (err) throw err;
+      console.log("Acceptance tests successful.");
     });
   });
 

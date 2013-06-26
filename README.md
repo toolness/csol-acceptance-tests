@@ -3,15 +3,30 @@ of Learning infrastructure and run acceptance tests on it.
 
 ## Prerequisites
 
-You'll need node, MongoDB, Redis, and MySQL.
+You'll need node, MongoDB, Redis, and MySQL. For automated assessment
+testing, you'll need phantomJS 1.8 or newer; manual testing doesn't 
+require this.
 
 ## Quick Start
+
+First, run this to set things up:
 
 ```bash
 git clone --recursive https://github.com/toolness/csol-acceptance-tests.git
 cd csol-acceptance-tests
 npm install
 node csol.js init
+```
+
+### Automated Acceptance Testing
+
+```bash
+node csol.js test
+```
+
+### Manual Testing
+
+```bash
 node csol.js start
 ```
 
