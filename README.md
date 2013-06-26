@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/toolness/csol-acceptance-tests.png?branch=master)](https://travis-ci.org/toolness/csol-acceptance-tests)
+
 This is an attempt at making it easy to set up the entire Chicago Summer
 of Learning infrastructure and run acceptance tests on it.
 
