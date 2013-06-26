@@ -12,7 +12,7 @@
     "underscore": "~1.4.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./csol.js init && ./csol.js test"
   },
   "repository": {
     "type": "git",
