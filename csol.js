@@ -4,10 +4,15 @@ var program = require('commander');
 var async = require('async');
 
 var projects = require('./lib/projects');
-var db = require('./lib/db');
 var servers = require('./lib/servers');
 var acceptanceTests = require('./lib/acceptance-tests');
 var Phantom = require('./lib/phantom');
+
+var resetDbs = [
+  projects['CSOL-site'].resetDb,
+  projects['aestimia'].resetDb,
+  projects['openbadger'].resetDb
+];
 
 process.on('uncaughtException', function(err) {
   servers.stopAll(function() {
@@ -23,22 +28,20 @@ program
     async.series([
       projects['CSOL-site'].exec.bind(null, 'npm install'),
       projects['aestimia'].exec.bind(null, 'npm install'),
-      projects['openbadger'].exec.bind(null, 'npm install'),
-      function(cb) {
-        console.log('Creating CSOL MySQL database.');
-        db.create({
-          host: projects['CSOL-site'].env.CSOL_DB_HOST,
-          port: projects['CSOL-site'].env.CSOL_DB_PORT,
-          user: projects['CSOL-site'].env.CSOL_DB_USER,
-          password: projects['CSOL-site'].env.CSOL_DB_PASS,
-          db: projects['CSOL-site'].env.CSOL_DB_NAME
-        }, cb);
-      },
-      projects['CSOL-site'].exec.bind(null, 'node bin/sync-db'),
-      projects['CSOL-site'].exec.bind(null, 'node bin/migrate-db')
-    ], function(err) {
+      projects['openbadger'].exec.bind(null, 'npm install')
+    ].concat(resetDbs), function(err) {
       if (err) throw err;
       console.log("Initialization successful.");
+    });
+  });
+
+program
+  .command('reset')
+  .description('wipe all databases and reset their state')
+  .action(function() {
+    async.series(resetDbs, function(err) {
+      if (err) throw err;
+      console.log("All databases wiped and reset.");
     });
   });
 
