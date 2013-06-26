@@ -45,9 +45,9 @@ program
   .description('start all services')
   .action(function() {
     async.series([
-      servers.start.bind(null, projects['aestimia'], 'node bin/aestimia.js'),
-      servers.start.bind(null, projects['openbadger'], 'node app.js'),
-      servers.start.bind(null, projects['CSOL-site'], 'node app.js')
+      servers.start.bind(null, projects['aestimia']),
+      servers.start.bind(null, projects['openbadger']),
+      servers.start.bind(null, projects['CSOL-site'])
     ], function(err) {
       if (err) throw err;
       console.log("Services started.");
