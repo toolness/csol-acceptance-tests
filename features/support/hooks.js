@@ -30,8 +30,8 @@ function startServers(phantom) {
   startServer(phantom).wait();
 }
 
-module.exports = function() {
-  this.Before(fiberize(function() {
+module.exports = fiberize(function() {
+  this.Before(function() {
     var phantom = Phantom();
     var asyncBrowser = phantom.createWebdriver();
 
@@ -54,12 +54,12 @@ module.exports = function() {
     this.openbadger = openbadger;
     this.browser = new FiberWebdriverObject(asyncBrowser);
     this.browser.init();
-  }));
+  });
 
-  this.After(fiberize(function() {
+  this.After(function() {
     var stopServers = Future.wrap(servers.stopAll);
 
     this.browser.quit();
     stopServers().wait();
-  }));
-};
+  });
+});
