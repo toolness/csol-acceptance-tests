@@ -12,9 +12,8 @@ var csolSite = projects['CSOL-site'];
 var openbadger = projects['openbadger'];
 
 process.on('uncaughtException', function(err) {
-  console.log("FUK", err.stack);
+  console.error(err.stack);
   servers.stopAll(function() {
-    console.error(err.stack);
     process.exit(1);
   });
 });
