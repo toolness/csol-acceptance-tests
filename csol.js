@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
+var path = require('path');
+var spawn = require('child_process').spawn;
 var program = require('commander');
 var async = require('async');
 
 var projects = require('./lib/projects');
 var servers = require('./lib/servers');
-var acceptanceTests = require('./lib/acceptance-tests');
-var Phantom = require('./lib/phantom');
 
 var resetDbs = [
   projects['CSOL-site'].resetDb,
@@ -83,22 +83,16 @@ program
   .command('test')
   .description('run acceptance tests')
   .action(function() {
-    if (!program.verbose) {
-      projects.stderr = projects.stdout = 'ignore';
-      console.info = function() {};
-    }
-    var phantom = Phantom();
-    async.series([
-      servers.start.bind(null, projects['aestimia']),
-      servers.start.bind(null, projects['openbadger']),
-      servers.start.bind(null, projects['CSOL-site']),
-      servers.start.bind(null, phantom),
-      acceptanceTests.run.bind(null, phantom.createWebdriver()),
-      servers.stopAll
-    ], function(err) {
-      if (err) throw err;
-      console.log("Acceptance tests successful.");
+    if (program.verbose)
+      process.env.DEBUG = '';
+    var cucumber = spawn('node', [
+      path.join(__dirname, 'node_modules', '.bin', 'cucumber'),
+      '--format', 'pretty'
+    ], {
+      cwd: __dirname,
+      stdio: [0, 1, 2]
     });
+    cucumber.on('exit', process.exit.bind(process));
   });
 
 program.parse(process.argv);
