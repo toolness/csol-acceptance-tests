@@ -18,6 +18,16 @@ process.on('uncaughtException', function(err) {
   });
 });
 
+function showWebdriverDebugOutput(asyncBrowser) {
+  asyncBrowser.on('status', function(info) {
+    console.info(info.cyan);
+  });
+
+  asyncBrowser.on('command', function(meth, path, data) {
+    console.info(' > ' + meth.yellow, path.grey, data || '');
+  });  
+}
+
 function startTasks(phantom, asyncBrowser) {
   var startServer = Future.wrap(servers.start);
   var concurrentTasks = [
@@ -44,17 +54,12 @@ function startTasks(phantom, asyncBrowser) {
 
 module.exports = fiberize(function() {
   this.Before(function() {
+    var setupStartTime = Date.now();
     var phantom = Phantom();
     var asyncBrowser = phantom.createWebdriver();
 
     if ('DEBUG' in process.env) {
-      asyncBrowser.on('status', function(info) {
-        console.info(info.cyan);
-      });
-
-      asyncBrowser.on('command', function(meth, path, data) {
-        console.info(' > ' + meth.yellow, path.grey, data || '');
-      });
+      showWebdriverDebugOutput(asyncBrowser);
     } else {
       projects.stderr = projects.stdout = 'ignore';
       console.info = function() {};
@@ -65,11 +70,16 @@ module.exports = fiberize(function() {
     this.csolSite = csolSite;
     this.openbadger = openbadger;
     this.browser = new FiberWebdriverObject(asyncBrowser);
+    this._scenarioStartTime = Date.now();
+    console.info("Scenario setup completed in " +
+                 (this._scenarioStartTime - setupStartTime) + " ms.");
   });
 
   this.After(function() {
     var stopServers = Future.wrap(servers.stopAll);
 
+    console.info("Scenario steps completed in " +
+                 (Date.now() - this._scenarioStartTime) + " ms.");
     this.browser.quit();
     stopServers().wait();
   });
