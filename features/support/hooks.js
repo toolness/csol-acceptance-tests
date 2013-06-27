@@ -18,16 +18,28 @@ process.on('uncaughtException', function(err) {
   });
 });
 
-function startServers(phantom) {
+function startTasks(phantom, asyncBrowser) {
   var startServer = Future.wrap(servers.start);
+  var concurrentTasks = [
+    startServer(phantom),
+    Future.wrap(aestimia.resetDb)(),
+    Future.wrap(openbadger.resetDb)(),
+    Future.wrap(csolSite.resetDb)(),
+  ];
 
-  [aestimia, openbadger, csolSite].forEach(function(project) {
-    var resetDb = Future.wrap(project.resetDb);
-    resetDb().wait();    
-    startServer(project).wait();
+  Future.wait(concurrentTasks);
+  
+  var initBrowser = Future.wrap(function(cb) {
+    asyncBrowser.init(cb);
   });
+  concurrentTasks = [
+    startServer(aestimia),
+    startServer(openbadger),
+    initBrowser()
+  ];
 
-  startServer(phantom).wait();
+  Future.wait(concurrentTasks);
+  startServer(csolSite).wait();
 }
 
 module.exports = fiberize(function() {
@@ -48,12 +60,11 @@ module.exports = fiberize(function() {
       console.info = function() {};
     }
 
-    startServers(phantom);
+    startTasks(phantom, asyncBrowser);
     this.aestimia = aestimia;
     this.csolSite = csolSite;
     this.openbadger = openbadger;
     this.browser = new FiberWebdriverObject(asyncBrowser);
-    this.browser.init();
   });
 
   this.After(function() {
