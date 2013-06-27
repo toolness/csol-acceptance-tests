@@ -6,8 +6,7 @@ module.exports = fiberize(function() {
   });
 
   this.When(/^they click on the link labeled "([^"]*)"$/, function(label) {
-    var elem = this.browser.elementByLinkText(label);
-    elem.click();
+    this.browser.elementByLinkText(label).click();
   });
 
   this.Then(/^they should see the sign up form$/, function() {
